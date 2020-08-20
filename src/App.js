@@ -120,7 +120,7 @@ function App() {
             </Spinner>
           </div>: ( 
             error? <Alert variant='danger'>{error}</Alert>: 
-          <CoinList data={data} handleDelete={handleDelete}/> )                   
+          <CoinList data={tableData} handleDelete={handleDelete}/> )                   
         }
       </div>      
     </div>
