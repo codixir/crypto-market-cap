@@ -1,0 +1,10 @@
+.coin-controls {
+  display: flex;
+  flex-direction: row;
+  padding-top: 15px;
+  justify-items: right;
+}
+
+.sort-select {
+  margin-left: 15px;
+}
