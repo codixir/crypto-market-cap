@@ -8,17 +8,22 @@ import Alert from 'react-bootstrap/Alert'
 import './App.css';
 
 function App() {
-  const [data, setData] = useState([]);
+  const [tableData, setData] = useState([]);
   const [limit] = useState(10);
   const [dropdownData, setDropdownData] = useState([]);
   const [currentCoinId, setCurrentCoinId] = useState(0);
   const [sortBy, setSortBy] = useState('cmc_rank');
+
+  //The following come from the redux store ----------------
   const coins = useSelector(state => state.coins.coins);
-  const isLoading = useSelector(state => state.coins.isLoading);
   const error = useSelector(state => state.coins.error);
+  const isLoading = useSelector(state => state.coins.isLoading);
+  //--------------------------------------------------------
+
   const dispatch = useDispatch();
 
-  const handleChange = (e) => {       
+  //Adds a coin from the dropdown to the table
+  const handleAddCoin = (e) => {       
     let id = e.target.value;
     if (id !== "-1") {     
       const currentCoin = dropdownData.filter((item) => item.id === Number(id))[0];
@@ -26,11 +31,12 @@ function App() {
 
       setDropdownData(newDropDownData);
 
-      const newData = [...data, currentCoin];
+      const newData = [...tableData, currentCoin];
       setData(newData);      
     }
   };
 
+  //Sorts the table
   const handleSort = (e) => {
     let value = e.target.value;
     
@@ -39,13 +45,14 @@ function App() {
     }
   };
 
+  //Deletes a row from the table
   const handleDelete = (e, id) => {
-    if (data.length > 1) {
-      const item  = data.filter((item) => {
+    if (tableData.length > 1) {
+      const item  = tableData.filter((item) => {
         return item.id === id;
       })[0];
   
-      const newData  = data.filter((item) => {
+      const newData  = tableData.filter((item) => {
         return item.id !== id;
       });
       setData(newData);
@@ -54,6 +61,12 @@ function App() {
       setDropdownData(newDrodownData);
     }
   };
+
+  //Here we do two types of sorting.
+  //If sorting by price, we do client side sort only. And that is because
+  //the api is not able to sort by `price`.
+  //But if sorting by rank, since the api accepts `cmc_rank` as value of the 
+  //sort queryParam, we let the backend do the sorting and just render the response.
 
   useEffect(() => {  
     const url = `/coinmarketcap/map`
@@ -67,6 +80,11 @@ function App() {
 
     dispatch(fetchAllCoins(url, queryParams));        
   }, [dispatch, limit, sortBy]);
+
+  //Here the 10 coins are split into two arrays, 
+  //where the first one will hold the first five coins
+  //that will be rendered on the table and the second one
+  //will hold the coins that will be placed in the dropdown
 
   useEffect(() => {
     const initialCoins  = coins.filter((item, index) => {
@@ -89,7 +107,7 @@ function App() {
     <div className="App">
       <CoinsListControls 
         dropdownData={dropdownData} 
-        handleChange={handleChange} 
+        handleChange={handleAddCoin} 
         handleSort={handleSort}
       />
 

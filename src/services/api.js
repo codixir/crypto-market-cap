@@ -25,7 +25,7 @@ class API {
    const url =  buildUrl(options.url, { queryParams: options.queryParams || null });
    return axiosInstance.get(url, {});                           
   }
-
+  //TODO: implement the following methods when needed
   create(options) {}
   update(options) {}
   delete(options) {}
